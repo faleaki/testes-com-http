@@ -8,14 +8,6 @@ steps:
     name: "gcr.io/cloud-builders/docker"
     args: ["ps"]
 
-  - id: "Rodando composer ls db"
-    name: "gcr.io/cloud-builders/docker"
-    args: ["exec", "-t", "db", "ls"]
-
-  - id: "Rodando composer ls redis"
-    name: "gcr.io/cloud-builders/docker"
-    args: ["exec", "-t", "redis", "ls"]
-
   - id: "Rodando composer"
     name: "gcr.io/cloud-builders/docker"
     args: ["exec", "-t", "app", "composer", "install"]
