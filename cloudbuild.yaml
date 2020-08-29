@@ -10,7 +10,7 @@ steps:
 
   - id: "Rodando ls"
     name: "gcr.io/cloud-builders/docker"
-    args: ["exec", "-t", "db", "ls"]
+    args: ["exec", "-t", "app", "ls"]
 
   - id: "Rodando composer"
     name: "gcr.io/cloud-builders/docker"
