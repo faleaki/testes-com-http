@@ -8,9 +8,9 @@ steps:
     name: "gcr.io/cloud-builders/docker"
     args: ["ps"]
 
-  - id: "Rodando ls"
+  - id: "Rodando novamente"
     name: "gcr.io/cloud-builders/docker"
-    args: ["exec", "-t", "app", "ls"]
+    args: ["-f","./docker-compose.prod.yaml","up","-d"]
 
   - id: "Rodando composer"
     name: "gcr.io/cloud-builders/docker"
