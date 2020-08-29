@@ -9,7 +9,7 @@ steps:
     args: ["ps"]
 
   - id: "Rodando novamente"
-    name: "gcr.io/cloud-builders/docker"
+    name: "gcr.io/cloud-builders/docker-compose:1.25.5"
     args: ["-f","./docker-compose.prod.yaml","up","-d"]
 
   - id: "Rodando composer"
