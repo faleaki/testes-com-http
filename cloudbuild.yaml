@@ -16,6 +16,10 @@ steps:
     name: "gcr.io/cloud-builders/docker"
     args: ["exec", "-t", "app", "composer", "install"]
 
+  - id: "Rodando docker psi novamente"
+    name: "gcr.io/cloud-builders/docker"
+    args: ["ps"]
+
   - id: "Copiando .env"
     name: "gcr.io/cloud-builders/docker"
     args: ["exec", "-t", "app", "cp", ".env.example", ".env"]
