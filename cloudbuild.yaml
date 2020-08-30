@@ -6,7 +6,7 @@ steps:
 
   - id: "id www-data"
     name: "gcr.io/cloud-builders/docker"
-    args: ["exec", "-t", "app", "id", "www-data"]
+    args: ["exec", "-t", "app", "id"]
 
   - id: "id db"
     name: "gcr.io/cloud-builders/docker"
