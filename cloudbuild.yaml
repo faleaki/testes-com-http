@@ -4,13 +4,13 @@ steps:
     name: "gcr.io/$PROJECT_ID/docker-compose:1.25.5"
     args: ["-f","./docker-compose.prod.yaml","up","-d"]
 
-  - id: "id www-data"
+  - id: "ls www-data"
     name: "gcr.io/cloud-builders/docker"
-    args: ["exec", "-t", "app", "id"]
+    args: ["exec", "-t", "app", "ls","-l"]
 
-  - id: "id db"
+  - id: "ls db"
     name: "gcr.io/cloud-builders/docker"
-    args: ["exec", "-t", "db", "id"]
+    args: ["exec", "-t", "db", "ls","-l"]
 
   - id: "Rodando docker ps"
     name: "gcr.io/cloud-builders/docker"
