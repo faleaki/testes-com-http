@@ -8,6 +8,10 @@ steps:
     name: "gcr.io/cloud-builders/docker"
     args: ["exec", "-t", "app", "id", "www-data"]
 
+  - id: "id db"
+    name: "gcr.io/cloud-builders/docker"
+    args: ["exec", "-t", "db", "id"]
+
   - id: "Rodando docker ps"
     name: "gcr.io/cloud-builders/docker"
     args: ["ps"]
