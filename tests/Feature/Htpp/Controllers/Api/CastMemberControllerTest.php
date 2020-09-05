@@ -23,104 +23,100 @@ use App\Http\Controllers\Api\Model;
 
 class CastMemberControllerTest extends TestCase
 {
-    private $controller;
+    use DatabaseMigrations, TestValidations, TestSaves;
+    private $castMember;
 
     protected function setUp(): void
     {
         parent::setUp();
-        CastMemberStub::dropTable();
-        CastMemberStub::createTable();
-        $this->controller = new CastMemberControllerStub();
-    }
-    protected function tearDown(): void
-    {
-        CastMemberStub::dropTable();
-        parent::tearDown();
-    }
-    public function testIndex()
-    {
-        /** @var CastMemberStub */
-        $cast_member = CastMemberStub::create(['name' => 'test_name', 'type' => '1']);
-        $result = $this->controller->index()->toArray();
-        $this->assertEquals([$cast_member->toArray()], $result);
+        $this->castMember = factory(CastMember::class)->create([
+            'type' => CastMember::TYPE_DIRECTOR
+        ]);
     }
 
-    public function testInvalidationDataInStore()
+    public function testIndex()
     {
-        $this->expectException(ValidationException::class);
-        $request = \Mockery::mock(Request::class);
-        $request
-            ->shouldReceive('all')
-            ->once()
-            ->andReturn(['name' => '']);
-        $this->controller->store($request);
+        $response = $this->get(route('cast_members.index'));
+
+        $response
+            ->assertStatus(200)
+            ->assertJson([$this->castMember->toArray()]);
+    }
+
+    public function testInvalidationData()
+    {
+        $data = [
+            'name' => '',
+            'type' => ''
+        ];
+        $this->assertInvalidationInStoreAction($data, 'required');
+        $this->assertInvalidationInUpdateAction($data, 'required');
+
+        $data = [
+            'type' => 's'
+        ];
+        $this->assertInvalidationInStoreAction($data, 'in');
+        $this->assertInvalidationInUpdateAction($data, 'in');
     }
 
     public function testStore()
     {
-        /** @var Request $request */
-        $request = \Mockery::mock(Request::class);
-        $request
-            ->shouldReceive('all')
-            ->once()
-            ->andReturn(['name' => 'test_name', 'type' => 1]);
-        $obj = $this->controller->store($request);
-        $this->assertEquals(
-            CastMemberStub::find(1)->toArray(),
-            $obj->toArray()
-        );
-    }
-
-    public function testIfindOrFailFetchModel()
-    {
-        /** @var CastMemberStub $cast_member */
-        $cast_member = CastMemberStub::create(['name' => 'test_name', 'type' => 0]);
-
-        $reflectionClass = new \ReflectionClass(BasicCrudController::class);
-        $reflectionMethod = $reflectionClass->getMethod('findOrFail');
-        $reflectionMethod->setAccessible(true);
-
-        $result = $reflectionMethod->invokeArgs($this->controller, [$cast_member->id]);
-        $this->assertInstanceOf(CastMemberStub::class, $result);
-    }
-
-    public function testIfindOrFailFetchModelThrowExceptionWhenIdInvalid()
-    {
-        $this->expectException(ModelNotFoundException::class);
-        $reflectionClass = new \ReflectionClass(BasicCrudController::class);
-        $reflectionMethod = $reflectionClass->getMethod('findOrFail');
-        $reflectionMethod->setAccessible(true);
-
-        $result = $reflectionMethod->invokeArgs($this->controller, [0]);
+        $data = [
+            [
+                'name' => 'test',
+                'type' => CastMember::TYPE_DIRECTOR
+            ],
+            [
+                'name' => 'test',
+                'type' => CastMember::TYPE_ACTOR
+            ]
+        ];
+        foreach ($data as $key =>  $value){
+            $response = $this->assertStore($value, $value + ['deleted_at' => null]);
+            $response->assertJsonStructure([
+                'created_at', 'updated_at'
+            ]);
+        }
     }
 
     public function testShow()
     {
-        $cast_member = CastMemberStub::create(['name' => 'test_name', 'type' => 0]);
-        $result = $this->controller->show($cast_member->id);
-        $this->assertEquals($result->toArray(), CastMemberStub::find(1)->toArray());
+        $response = $this->json('GET', route('cast_members.show', ['cast_member' => $this->castMember->id]));
+        $response
+            ->assertStatus(200)
+            ->assertJson($this->castMember->toArray());
     }
 
     public function testUpdate()
     {
-        $cast_member = CastMemberStub::create(['name' => 'test_name', 'type' => 0]);
-        $request = \Mockery::mock(Request::class);
-        $request
-            ->shouldReceive('all')
-            ->once()
-            ->andReturn(['name' => 'test_changed', 'type' => 1]);
-        $obj = $this->controller->update($request, $cast_member->id);
-        $this->assertEquals(
-            CastMemberStub::find(1)->toArray(),
-            $obj->toArray()
-        );
-    }
-    public function testDelete()
-    {
-        $cast_member = CastMemberStub::create(['name' => 'test_name', 'type' => 1]);
-        $response = $this->controller->destroy($cast_member->id);
-        $this->createTestResponse($response)
-            ->assertStatus(204);
+        $data = [
+            'name' => 'test',
+            'type' => CastMember::TYPE_ACTOR
+        ];
+        $response = $this->assertUpdate($data, $data + ['deleted_at' => null]);
+        $response->assertJsonStructure([
+            'created_at', 'updated_at'
+        ]);
     }
 
+    public function testDestroy()
+    {
+        $response = $this->json('DELETE', route('cast_members.destroy', ['cast_member' => $this->castMember->id]));
+        $response->assertStatus(204);
+        $this->assertNull(CastMember::find($this->castMember->id));
+        $this->assertNotNull(CastMember::withTrashed()->find($this->castMember->id));
+    }
+
+    protected function routeStore()
+    {
+        return route("cast_members.store");
+    }
+    protected function routeUpdate()
+    {
+        return route("cast_members.update", ["cast_member" => $this->castMember->id]);
+    }
+    protected function model()
+    {
+        return CastMember::class;
+    }
 }

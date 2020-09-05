@@ -10,6 +10,7 @@ class CategoryController extends Controller
 {
     private $rules = [
         'name' => 'required|max:255',
+        'description' => 'nullable',
         'is_active' => 'boolean'
 
     ];

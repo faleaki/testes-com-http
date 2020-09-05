@@ -9,6 +9,7 @@ abstract class BasicCrudController extends Controller
 {
     protected abstract function model();
     protected abstract function rulesStore();
+    protected abstract function rulesUpdate();
 
     public function index()
     {
