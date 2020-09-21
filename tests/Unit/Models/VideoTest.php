@@ -4,6 +4,7 @@ namespace Tests\Unit\Models;
 
 use App\Models\Video;
 use App\Models\Genre;
+use App\Models\Traits\UploadFiles;
 use App\Models\Traits\Uuid;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use PHPUnit\Framework\TestCase;
@@ -30,7 +31,7 @@ class VideoTest extends TestCase
 
     public function testIfUsesTraits()
     {
-        $traits = [ SoftDeletes::class, Uuid::class ];
+        $traits = [ SoftDeletes::class, Uuid::class, UploadFiles::class ];
         $videoTraits = array_keys(class_uses(Video::class));
         //print_r(class_uses(Video::class));
         $this->assertEquals($traits,$videoTraits);

@@ -10,7 +10,8 @@ class GenreController extends BasicCrudController
 {
     private $rules = [
         'name' => 'required|max:255',
-        'is_active' => 'boolean'
+        'is_active' => 'boolean',
+        'categories_id' => 'required|arrray|exists:categories,id,deleted_at,NULL'
     ];
 
     public function __construct()
