@@ -71,7 +71,7 @@ class Video extends Model
             \DB::rollBack();
             throw $e;
         }
-        return false;
+
     }
 
     public static function handleRelations(Video $video, array $attributes)

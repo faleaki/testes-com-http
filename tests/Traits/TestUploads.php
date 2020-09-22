@@ -20,7 +20,7 @@ trait TestUploads
         ];
 
         foreach ($routes as $route) {
-            $file = UploadedFile::fake()->create("$field.$extension");
+            $file = UploadedFile::fake()->create("$field.1$extension");
             $response = $this->json($route['method'], $route['route'], [
                 $field => $file
             ]);

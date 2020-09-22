@@ -7,7 +7,7 @@ use Illuminate\Http\UploadedFile;
 use App\Models\Traits\UploadFiles;
 use App\Models\Traits\Uuid;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 use Tests\Stubs\Models\UploadFilesStub;
 
 class UploadFilesUnitTest extends TestCase

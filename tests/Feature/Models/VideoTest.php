@@ -44,6 +44,7 @@ class VideoTest extends TestCase
                 'opened',
                 'rating',
                 'duration',
+                'video_file',
                 'created_at',
                 'updated_at',
                 'deleted_at'
@@ -207,7 +208,7 @@ class VideoTest extends TestCase
         $categoriesId = factory(Category::class, 3)->create()->pluck('id')->toArray();
         $video = factory(Video::class)->create();
         Video::handleRelations($video, [
-            'categories_id' => $categoriesId[0]
+            'categories_id' => [$categoriesId[0]]
         ]);
         $this->assertDatabaseHas('category_video', [
             'category_id' => $categoriesId[0],
@@ -236,7 +237,7 @@ class VideoTest extends TestCase
         $genresId = factory(Genre::class, 3)->create()->pluck('id')->toArray();
         $video = factory(Video::class)->create();
         Video::handleRelations($video, [
-            'genres_id' => $genresId[0]
+            'genres_id' => [$genresId[0]]
         ]);
         $this->assertDatabaseHas('genre_video', [
             'genre_id' => $genresId[0],
